@@ -7,19 +7,38 @@
 //
 
 import UIKit
+import Alamofire
 
 class ViewController: UIViewController {
+    
+    var storyModel = [DataModel]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        getMethod()
+        
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func getMethod() {
+        Alamofire.request("https://jsonplaceholder.typicode.com/posts")
+            .responseJSON { response in
+                switch response.result {
+                case .success:
+                    print(response.result.value as? [[String : Any]] ?? [])
+                    self.getResponse(response: (response.result.value as? [[String : Any]])!)
+                case .failure:
+                    print("error")
+                }
+        }
     }
-
-
+    
+    func getResponse(response: [[String : Any]]) {
+        for dic in response{
+            self.storyModel.append(DataModel(dic))
+        }
+        print(self.storyModel)
+        
+    }
+    
 }
 
